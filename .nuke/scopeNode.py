@@ -1,3 +1,7 @@
+"""
+
+"""
+
 class scopeNode:
     def __init__(self, node:nuke.Group):
         # validate that the node has a valid context

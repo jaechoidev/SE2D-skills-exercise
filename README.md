@@ -25,7 +25,7 @@ nuke.createNode("Grade")
 - check existing discussion on the behavior as it does not look like ideal behavior
     - post 1[^1]
     - post 2[^2]
-    - PEP343 - The `with` statement[^3]
+- learn more about with, PEP343 - The `with` statement[^3]
 - check which nodes have `begin`,`end`,`__enter__` or `__exit__`, which can be assumed having context.
 ```Python
 ctx_nodes = []
@@ -70,6 +70,11 @@ Requirements
 ```Python
 blur_nodes = findUpstream(write_node, filterFn=lambda n: n.Class() == "Blur")
 ```
+
+### Approach
+- Implement DFS type of algorithm (BFS would be fine) to traverse upstream nodes.
+- We need to traverse inside if the node has context, so use the result of step1.
+
 
 ## Step 3 - Node Replacement
 

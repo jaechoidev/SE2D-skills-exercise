@@ -1,0 +1,335 @@
+#! /software/apps/nuke/15.1v4/EL9.x86_64/libnuke-15.1.4.so -nx
+#write_info Write1 file:"" format:"2048 1556 1" chans:":rgba.red:rgba.green:rgba.blue:" framerange:"1 100" fps:"0" colorspace:"default" datatype:"unknown" transfer:"unknown" views:"main" colorManagement:"Nuke"
+version 15.1 v4
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="0" y="24" w="1912" h="1123" screen="0">
+        <splitter orientation="1">
+            <split size="40"/>
+            <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                <page id="Toolbar.1"/>
+            </dock>
+            <split size="1084" stretch="1"/>
+            <splitter orientation="2">
+                <split size="635"/>
+                <dock id="" activePageId="Viewer.1">
+                    <page id="Viewer.1"/>
+                    <page id="uk.co.thefoundry.scripteditor.1"/>
+                    <page id="Viewer.2"/>
+                </dock>
+                <split size="445"/>
+                <dock id="" activePageId="DAG.2" focus="true">
+                    <page id="DAG.1"/>
+                    <page id="Curve Editor.1"/>
+                    <page id="DopeSheet.1"/>
+                    <page id="DAG.2"/>
+                    <page id="DAG.3"/>
+                    <page id="DAG.4"/>
+                </dock>
+            </splitter>
+            <split size="780"/>
+            <dock id="" activePageId="Properties.1">
+                <page id="Properties.1"/>
+                <page id="uk.co.thefoundry.backgroundrenderview.1"/>
+                <page id="ImageEngine.Jabuka"/>
+                <page id="ImageEngine.Caribou"/>
+            </dock>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+ inputs 0
+ name /home/lucienf/dev/2d_sof_eng_exercice/replace_node_test.nk
+ format "2048 1556 0 0 2048 1556 1 2K_Super_35(full-ap)"
+ proxy_type scale
+ proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+ colorManagement Nuke
+ workingSpaceLUT linear
+ monitorLut sRGB
+ monitorOutLUT rec709
+ int8Lut sRGB
+ int16Lut sRGB
+ logLut Cineon
+ floatLut linear
+}
+Group {
+ inputs 0
+ name GroupA
+ selected true
+ xpos 373
+ ypos 58
+}
+ Group {
+  inputs 0
+  name GroupB
+  xpos 174
+  ypos -106
+ }
+  ColorBars {
+   inputs 0
+   name ColorBars1
+   xpos 79
+   ypos -204
+  }
+  ColorWheel {
+   inputs 0
+   gamma 0.45
+   name ColorWheel1
+   xpos -233
+   ypos -353
+  }
+  Transform {
+   translate {-12 0}
+   rotate {{"parent.Blur1.mix * 360"}}
+   scale {{parent.Blur1.mix}}
+   center {1024 778}
+   name Transform1
+   xpos -233
+   ypos -281
+  }
+  Blur {
+   channels {rgba.red -rgba.green -rgba.blue none}
+   size 120
+   mix 0.5
+   name Blur1
+   xpos -233
+   ypos -249
+  }
+  CheckerBoard2 {
+   inputs 0
+   name CheckerBoard1
+   xpos -93
+   ypos -374
+  }
+  Merge2 {
+   inputs 2
+   name Merge1
+   xpos -93
+   ypos -249
+  }
+  Transform {
+   translate {-312 112}
+   rotate 18
+   scale 0.5
+   center {1024 778}
+   name Transform2
+   xpos -93
+   ypos -223
+  }
+  Blur {
+   inputs 1+1
+   channels rgb
+   size 41
+   quality 5
+   maskChannelMask rgba.red
+   name Blur2
+   xpos -93
+   ypos -181
+  }
+  Output {
+   name Output1
+   xpos -93
+   ypos -81
+  }
+  CheckerBoard2 {
+   inputs 0
+   name CheckerBoard2
+   xpos -517
+   ypos -262
+  }
+  Blur {
+   size {{parent.Blur2.size*2}}
+   name Blur3
+   xpos -517
+   ypos -190
+  }
+ end_group
+ Group {
+  inputs 0
+  name GroupC
+  xpos 387
+  ypos -107
+ }
+  ColorWheel {
+   inputs 0
+   gamma 0.45
+   name ColorWheel1
+   xpos 234
+   ypos -158
+  }
+set N1156a2b0 [stack 0]
+push $N1156a2b0
+  CheckerBoard2 {
+   inputs 0
+   name CheckerBoard1
+   xpos 99
+   ypos -213
+  }
+  Blur {
+   inputs 1+1
+   channels {rgba.red -rgba.green -rgba.blue}
+   size 100
+   maskChannelMask rgba.green
+   name Blur1
+   xpos 99
+   ypos -141
+  }
+  Blur {
+   inputs 1+1
+   size 30.2
+   maskChannelMask rgba.red
+   invert_mask true
+   mix 0.766
+   name Blur2
+   xpos 99
+   ypos -87
+  }
+set N117307a0 [stack 0]
+  Transform {
+   rotate 54
+   center {1024 778}
+   name Transform1
+   xpos -13
+   ypos -34
+  }
+  Blur {
+   size 87
+   crop false
+   name Blur3
+   xpos -13
+   ypos -8
+  }
+push $N117307a0
+  Merge2 {
+   inputs 2
+   operation hard-light
+   mix 0.598
+   name Merge1
+   xpos 99
+   ypos -2
+  }
+  Transform {
+   rotate -43
+   center {1024 778}
+   invert_matrix true
+   name Transform2
+   xpos 99
+   ypos 53
+  }
+  Crop {
+   box {0 0 2048 1556}
+   name Crop1
+   xpos 99
+   ypos 79
+  }
+  Blur {
+   channels rgba
+   size 45
+   mix {{parent.Grade1.white}}
+   name Blur4
+   xpos 99
+   ypos 115
+  }
+  Grade {
+   white 0.76
+   multiply {0.273997 0.983365 1 1}
+   multiply_panelDropped true
+   name Grade1
+   xpos 99
+   ypos 175
+  }
+  Output {
+   name Output1
+   xpos 99
+   ypos 253
+  }
+ end_group
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos 279
+  ypos -27
+ }
+set N11b50490 [stack 0]
+ Blur {
+  channels {rgba.red -rgba.green -rgba.blue none}
+  size {{parent.Blur1.size*2}}
+  name Blur2
+  xpos 279
+  ypos 30
+ }
+push 0
+push $N11b50490
+ Blur {
+  channels {-rgba.red rgba.green -rgba.blue none}
+  size {{parent.Blur2.size*.3}}
+  name Blur3
+  xpos 410
+  ypos 31
+ }
+push $N11b50490
+ Blur {
+  channels {-rgba.red -rgba.green rgba.blue none}
+  size 54
+  name Blur1
+  xpos 146
+  ypos 30
+ }
+ Merge2 {
+  inputs 3+1
+  operation plus
+  name Plus
+  xpos 279
+  ypos 97
+ }
+ Grade {
+  multiply 0.15
+  name Grade1
+  xpos 279
+  ypos 135
+ }
+ Crop {
+  box {0 0 2048 1556}
+  name Crop1
+  xpos 279
+  ypos 161
+ }
+ Output {
+  name Output1
+  xpos 279
+  ypos 216
+ }
+end_group
+Blur {
+ size 600
+ filter triangle
+ mix 0.524
+ name Blur1
+ xpos 373
+ ypos 98
+}
+Crop {
+ box {0 0 2048 1556}
+ name Crop1
+ xpos 373
+ ypos 136
+}
+Write {
+ ocioColorspace scene_linear
+ display default
+ view sRGB
+ name Write1
+ xpos 373
+ ypos 197
+}
+Viewer {
+ frame 1
+ frame_range 1-100
+ colour_sample_bbox {0.31640625 0.193359375 0.3173828125 0.1943359375}
+ monitorOutNDISenderName "Nuke - untitled - Viewer1"
+ monitorOutOutputTransform rec709
+ name Viewer1
+ xpos 373
+ ypos 308
+}

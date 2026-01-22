@@ -16,10 +16,29 @@ Make sure to demonstrate that your work is behaving correctly
 ### Example Usage
 ```Python
 with scopeNode(node):
-nuke.createNode("Blur") # This node should be created inside `node`
+    nuke.createNode("Blur") # This node should be created inside `node`
 # Outside the with block, the original context should be restored.
 nuke.createNode("Grade")
 ```
+
+### Approach
+- check existing discussion on the behavior as it does not look like ideal behavior
+    - post 1[^1]
+    - post 2[^2]
+    - PEP343 - The `with` statement[^3]
+- check which nodes have `begin`,`end`,`__enter__` or `__exit__`, which can be assumed having context.
+```Python
+ctx_nodes = []
+for name in dir(nuke):
+    obj = getattr(nuke, name)
+    if isinstance(obj, type) and issubclass(obj, nuke.Node):
+        if hasattr(obj, 'begin'):
+            ctx_nodes.append(name)
+print(ctx_nodes)
+# Result: ['Gizmo', 'Group', 'LiveGroup', 'Precomp', 'Root']
+# all of these are subclasses of Group
+```
+
 
 ## Step 2 - Upstream Node Search with Filtering
 
@@ -99,3 +118,7 @@ Save the modified Nuke script with a new name for us to review.
 ### Modified nuke script 
 
 ### References
+[^1]: https://community.foundry.com/discuss/topic/156600/nuke-root-begin-breaks-code
+[^2]: https://community.foundry.com/discuss/topic/158875/issues-with-context-when-creating-nodes
+[^3]: https://peps.python.org/pep-0343/
+

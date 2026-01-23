@@ -4,7 +4,7 @@
 
 from scopeNode import scopeNode
 
-def findUpstream(node, filterFn=None)->list:
+def findUpstream(node, filterFn=None):
     """
     Find all upstream nodes for a given node using traversal algorithm (DFS).
     Args:
@@ -14,24 +14,23 @@ def findUpstream(node, filterFn=None)->list:
     Returns:
         list of nuke.Node: List of nodes upstream of the given node that
         satisfy the filter.
-    """
+    """    
+    def _traverse(node):
+        stack = [node]
+        while stack:
+            node = stack.pop()
+            if node is None or node.fullName() in visited:
+                continue
+            visited.add(node.fullName())
+            if filterFn is None or filterFn(node):
+                filtered.add(node.fullName())
+                node.setSelected(True)
+            if isinstance(node, nuke.Group):
+                with scopeNode(node):
+                    output = node.output()
+                    _traverse(output)
+            stack += [node.input(i) for i in range(node.inputs())]
     visited = set()
-    filtered = list()
-    stack = [node]
-    while stack:
-        node = stack.pop()
-        if node is None or node.fullName() in visited:
-            continue
-        visited.add(node.fullName())
-        if filterFn is None or filterFn(node):
-            filtered.append(node.fullName())
-            node.setSelected(True)
-        if isinstance(node, nuke.Group):
-            with scopeNode(node):
-                output = node.output() # get the actuall output node of the group
-                # filtered |= findUpstream(output, filterFn)
-                filtered += findUpstream(output, filterFn)
-        stack += [node.input(i) for i in range(node.inputs())]
-    print(len(visited))
-    return filtered
-
+    filtered = set()
+    _traverse(node)
+    return list(filtered)

@@ -3,7 +3,7 @@
 """
 
 class scopeNode:
-    def __init__(self, node:nuke.Group):
+    def __init__(self, node):
         # validate that the node has a valid context
         self._validate_group(node)
         self.node = node

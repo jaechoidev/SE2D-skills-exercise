@@ -104,6 +104,13 @@ reference the old node's name and updates them to reference the new node's name.
 replaceNode("Blur", "Defocus", "Write1")
 ```
 
+### Approach
+- task1 uses step2 and `nuke.allNodes(sourceClass)`
+- search for a way to copy knobs[^4], but it seems better to check each knobs
+- reconnects means, disconnect and reconnect, inputs and outputs
+- find expressions that reference ethe old node and replace them
+- what if the expression is not valid? remove it or not?
+
 ## Step 4 - Node Replacement
 
 ### Background
@@ -119,11 +126,17 @@ Save the modified Nuke script with a new name for us to review.
 
 ## Results
 ### Limitations
+
 ### Potential improvements
+- currently it's not checking if the expression is valid after replacing nodes. For example, `parent.Blur2.size*2` changed into `parent.Defocus1.size*2`, but Defocus does not have size knob. Maybe good to validate and delete it or,
+- it would be good to have custom mapping while replacing nodes. For example, blur['size'] could be interpreted Defocus['defocus']. 
+- scopeNode assumes that it expects Group-type (Group node or subclasses of Group node). It is not necessary to generalize more now, but might be better.
+
 ### Modified nuke script 
+
 
 ### References
 [^1]: https://community.foundry.com/discuss/topic/156600/nuke-root-begin-breaks-code
 [^2]: https://community.foundry.com/discuss/topic/158875/issues-with-context-when-creating-nodes
 [^3]: https://peps.python.org/pep-0343/
-
+[^4]: https://learn.foundry.com/nuke/developers/16.0/pythondevguide/_autosummary/nuke.Node.html?highlight=nuke%20node#nuke.Node.writeKnobs

@@ -1,8 +1,5 @@
-"""
-
-"""
-
-from scopeNode import scopeNode
+import nuke
+from .scopeNode import scopeNode
 
 def findUpstream(node, filterFn=None):
     """
@@ -24,7 +21,6 @@ def findUpstream(node, filterFn=None):
             visited.add(node)
             if filterFn is None or filterFn(node):
                 filtered.add(node)
-                node.setSelected(True)
             if isinstance(node, nuke.Group):
                 with scopeNode(node):
                     output = node.output()

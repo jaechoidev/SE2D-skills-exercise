@@ -1,8 +1,14 @@
-"""
-
-"""
+import nuke
 
 class scopeNode:
+    """
+    context manager (with statement) to temporarily switch 
+    into the given node context and ensure that the original context is restored 
+    when exiting the scope.
+
+    Args:
+        node (nuke.Group): A Nuke Group-type node to set as the current context.
+    """
     def __init__(self, node):
         # validate that the node has a valid context
         self._validate_group(node)

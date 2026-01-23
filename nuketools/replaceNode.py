@@ -1,16 +1,27 @@
-"""
-
-"""
+import nuke
 import re
+from .findUpstream import findUpstream
+from .scopeNode import scopeNode
 
 def replaceNode(sourceClass, targetClass, node=None):
+    """
+    Replace all nodes of one class with another class, 
+    preserving connections and knob values.
+
+    Args:
+        sourceClass (str): The class name of nodes to be replaced (e.g., 'Blur', 'Grade').
+        targetClass (str): The class name to replace with.
+        node (str, optional): If provided, only replaces nodes upstream of this node.
+            If None, replaces all nodes of sourceClass in the script.
+    """
     # 1. Filters by Scope
     if node is None:
         nodes = nuke.allNodes(sourceClass)
     else:
         nodes = findUpstream(nuke.toNode(node), filterFn=lambda n: n.Class() == sourceClass)
     # deselect all NOT to mess up while creating new nodes
-    [n.setSelected(False) for n in nuke.allNodes(recurseGroups=True)]
+    for n in nuke.allNodes(recurseGroups=True):
+        n.setSelected(False)
 
     # 2. Executes Seamless Replacement
     replacements = []  # List[tuple] : [(old_node, new_node, inputs, deps_info)]
@@ -46,9 +57,8 @@ def replaceNode(sourceClass, targetClass, node=None):
             # only when dep requires replacement
             if dep not in old_to_new:
                 dep.setInput(i, new_node)
-                
-    # 4. Synchronizes Knob Data
-    # There might be cleaner way
+        # 4. Synchronizes Knob Data
+        # There might be cleaner way
         skip_knobs = {'name', 'xpos', 'ypos', 'selected'}
         for key in old_node.knobs():
             if key in skip_knobs or key not in new_node.knobs():

@@ -1,0 +1,338 @@
+#! /Applications/Nuke16.0v8/Nuke16.0v8.app/Contents/MacOS/libnuke-16.0.8.dylib -nx
+#write_info Write1 file:"" format:"2048 1556 1" chans:":rgba.red:rgba.green:rgba.blue:" framerange:"1 100" fps:"0" colorspace:"default" datatype:"unknown" transfer:"unknown" views:"main" colorManagement:"Nuke"
+version 16.0 v8
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="-229" y="-1410" w="2560" h="1382" maximized="1" screen="1">
+        <splitter orientation="1">
+            <split size="40"/>
+            <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                <page id="Toolbar.1"/>
+            </dock>
+            <split size="1897" stretch="1"/>
+            <splitter orientation="2">
+                <split size="800"/>
+                <dock id="" activePageId="uk.co.thefoundry.scripteditor.1">
+                    <page id="Viewer.1"/>
+                    <page id="uk.co.thefoundry.scripteditor.1"/>
+                </dock>
+                <split size="562"/>
+                <dock id="" activePageId="DAG.1" focus="true">
+                    <page id="DAG.1"/>
+                    <page id="Curve Editor.1"/>
+                    <page id="DopeSheet.1"/>
+                </dock>
+            </splitter>
+            <split size="615"/>
+            <dock id="" activePageId="Properties.1">
+                <page id="Properties.1"/>
+                <page id="uk.co.thefoundry.backgroundrenderview.1"/>
+                <page id="Scenegraph.1"/>
+            </dock>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+ inputs 0
+ name /Users/jaechoi/.nuke/nk/replace_node_test_result.nk
+ format "2048 1556 0 0 2048 1556 1 2K_Super_35(full-ap)"
+ proxy_type scale
+ proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+ colorManagement Nuke
+ workingSpaceLUT linear
+ monitorLut sRGB
+ monitorOutLUT rec709
+ int8Lut sRGB
+ int16Lut sRGB
+ logLut Cineon
+ floatLut linear
+}
+Group {
+ inputs 0
+ name GroupA
+ xpos 373
+ ypos 58
+ show_group_view true
+}
+ Group {
+  inputs 0
+  name GroupB
+  xpos -229
+  ypos -108
+  show_group_view true
+ }
+  ColorBars {
+   inputs 0
+   name ColorBars1
+   xpos 79
+   ypos -204
+  }
+  ColorWheel {
+   inputs 0
+   gamma 0.45
+   name ColorWheel1
+   xpos -233
+   ypos -353
+  }
+  Transform {
+   translate {-12 0}
+   rotate {{"parent.Defocus2.mix * 360"}}
+   scale {{parent.Defocus2.mix}}
+   center {1024 778}
+   name Transform1
+   xpos -233
+   ypos -281
+  }
+  Defocus {
+   channels {rgba.red -rgba.green -rgba.blue none}
+   quality 15
+   mix 0.5
+   name Defocus2
+   note_font Verdana
+   xpos -233
+   ypos -249
+  }
+  CheckerBoard2 {
+   inputs 0
+   name CheckerBoard1
+   xpos -93
+   ypos -374
+  }
+  Merge2 {
+   inputs 2
+   name Merge1
+   xpos -93
+   ypos -249
+  }
+  Transform {
+   translate {-312 112}
+   rotate 18
+   scale 0.5
+   center {1024 778}
+   name Transform2
+   xpos -93
+   ypos -223
+  }
+  Defocus {
+   inputs 1+1
+   channels rgb
+   quality 5
+   maskChannelMask rgba.red
+   name Defocus1
+   note_font Verdana
+   xpos -93
+   ypos -181
+  }
+  Output {
+   name Output1
+   xpos -93
+   ypos -81
+  }
+  CheckerBoard2 {
+   inputs 0
+   name CheckerBoard2
+   xpos -517
+   ypos -262
+  }
+  Blur {
+   size {{parent.Defocus1.size*2}}
+   name Blur3
+   xpos -517
+   ypos -190
+  }
+ end_group
+ Group {
+  inputs 0
+  name GroupC
+  xpos 387
+  ypos -107
+  show_group_view true
+ }
+  ColorWheel {
+   inputs 0
+   gamma 0.45
+   name ColorWheel1
+   xpos 234
+   ypos -158
+  }
+set Ndcd58500 [stack 0]
+push $Ndcd58500
+  CheckerBoard2 {
+   inputs 0
+   name CheckerBoard1
+   xpos 99
+   ypos -213
+  }
+  Defocus {
+   inputs 1+1
+   channels {rgba.red -rgba.green -rgba.blue none}
+   quality 15
+   maskChannelMask rgba.green
+   name Defocus2
+   note_font Verdana
+   xpos 99
+   ypos -141
+  }
+  Defocus {
+   inputs 1+1
+   quality 15
+   maskChannelMask rgba.red
+   invert_mask true
+   mix 0.766
+   name Defocus1
+   note_font Verdana
+   xpos 99
+   ypos -87
+  }
+set Nc666d400 [stack 0]
+  Transform {
+   rotate 54
+   center {1024 778}
+   name Transform1
+   xpos -13
+   ypos -34
+  }
+  Defocus {
+   quality 15
+   name Defocus4
+   note_font Verdana
+   xpos -13
+   ypos -8
+  }
+push $Nc666d400
+  Merge2 {
+   inputs 2
+   operation hard-light
+   mix 0.598
+   name Merge1
+   xpos 99
+   ypos -2
+  }
+  Transform {
+   rotate -43
+   center {1024 778}
+   invert_matrix true
+   name Transform2
+   xpos 99
+   ypos 53
+  }
+  Crop {
+   box {0 0 2048 1556}
+   name Crop1
+   xpos 99
+   ypos 79
+  }
+  Defocus {
+   channels rgba
+   quality 15
+   mix {{parent.Grade1.white}}
+   name Defocus3
+   note_font Verdana
+   xpos 99
+   ypos 115
+  }
+  Grade {
+   white 0.76
+   multiply {0.273997 0.983365 1 1}
+   multiply_panelDropped true
+   name Grade1
+   xpos 99
+   ypos 175
+  }
+  Output {
+   name Output1
+   xpos 99
+   ypos 253
+  }
+ end_group
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos 279
+  ypos -27
+ }
+set Ndcda8a00 [stack 0]
+ Defocus {
+  channels {rgba.red -rgba.green -rgba.blue none}
+  quality 15
+  name Defocus1
+  note_font Verdana
+  xpos 279
+  ypos 30
+ }
+push 0
+push $Ndcda8a00
+ Defocus {
+  channels {-rgba.red rgba.green -rgba.blue none}
+  quality 15
+  name Defocus2
+  note_font Verdana
+  xpos 410
+  ypos 31
+ }
+push $Ndcda8a00
+ Defocus {
+  channels {-rgba.red -rgba.green rgba.blue none}
+  quality 15
+  name Defocus3
+  note_font Verdana
+  xpos 146
+  ypos 30
+ }
+ Merge2 {
+  inputs 3+1
+  operation plus
+  name Plus
+  xpos 279
+  ypos 97
+ }
+ Grade {
+  multiply 0.15
+  name Grade1
+  xpos 279
+  ypos 135
+ }
+ Crop {
+  box {0 0 2048 1556}
+  name Crop1
+  xpos 279
+  ypos 161
+ }
+ Output {
+  name Output1
+  xpos 279
+  ypos 216
+ }
+end_group
+Defocus {
+ quality 15
+ mix 0.524
+ name Defocus1
+ note_font Verdana
+ xpos 373
+ ypos 98
+}
+Crop {
+ box {0 0 2048 1556}
+ name Crop1
+ xpos 373
+ ypos 136
+}
+Write {
+ ocioColorspace scene_linear
+ display default
+ view sRGB
+ name Write1
+ xpos 373
+ ypos 197
+}
+Viewer {
+ frame_range 1-100
+ colour_sample_bbox {0.31640625 0.193359375 0.3173828125 0.1943359375}
+ monitorOutNDISenderName "Nuke - replace_node_test - Viewer1"
+ monitorOutOutputTransform rec709
+ name Viewer1
+ xpos 373
+ ypos 308
+}

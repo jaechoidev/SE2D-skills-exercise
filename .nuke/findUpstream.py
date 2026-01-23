@@ -19,11 +19,11 @@ def findUpstream(node, filterFn=None):
         stack = [node]
         while stack:
             node = stack.pop()
-            if node is None or node.fullName() in visited:
+            if node is None or node in visited:
                 continue
-            visited.add(node.fullName())
+            visited.add(node)
             if filterFn is None or filterFn(node):
-                filtered.add(node.fullName())
+                filtered.add(node)
                 node.setSelected(True)
             if isinstance(node, nuke.Group):
                 with scopeNode(node):

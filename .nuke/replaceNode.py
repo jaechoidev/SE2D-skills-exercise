@@ -8,8 +8,7 @@ def replaceNode(sourceClass, targetClass, node=None):
     if node is None:
         nodes = nuke.allNodes(sourceClass)
     else:
-        node_names = findUpstream(nuke.toNode(node), filterFn=lambda n: n.Class() == sourceClass)
-        nodes = [nuke.toNode(n) for n in node_names]
+        nodes = findUpstream(nuke.toNode(node), filterFn=lambda n: n.Class() == sourceClass)
     # deselect all NOT to mess up while creating new nodes
     [n.setSelected(False) for n in nuke.allNodes(recurseGroups=True)]
 

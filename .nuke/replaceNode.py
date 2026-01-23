@@ -14,11 +14,12 @@ def replaceNode(sourceClass, targetClass, node=None):
     [n.setSelected(False) for n in nuke.allNodes(recurseGroups=True)]
 
     # 2. Executes Seamless Replacement
-    replacements = []  # (old_node, new_node, deps_info)
+    replacements = []  # List[tuple] : [(old_node, new_node, inputs, deps_info)]
+    old_to_new = {}    # mapping old_node : new_node
 
     for old_node in nodes:
         with scopeNode(old_node.parent()):
-            new_node = nuke.createNode(targetClass)
+            new_node = nuke.createNode(targetClass, inpanel=False)
             new_node.setXpos(old_node.xpos())
             new_node.setYpos(old_node.ypos())
         
@@ -32,14 +33,21 @@ def replaceNode(sourceClass, targetClass, node=None):
                 if dep.input(i) == old_node:
                     deps_info.append((dep, i))    
         replacements.append((old_node, new_node, inputs, deps_info))
+        old_to_new[old_node] = new_node
 
     # 3. Restores Graph Topology
-    for old_node, new_node, inputs, deps_info in replacements:
+    for old_node, new_node, inputs, deps_info in reversed(replacements):
         for i, inp in enumerate(inputs):
-            new_node.setInput(i, inp)
+            # connect to new node when input is old node
+            if inp in old_to_new:
+                new_node.setInput(i, old_to_new[inp])
+            else:
+                new_node.setInput(i, inp)
         for dep, i in deps_info:
-            dep.setInput(i, new_node)
-
+            # only when dep requires replacement
+            if dep not in old_to_new:
+                dep.setInput(i, new_node)
+                
     # 4. Synchronizes Knob Data
     # There might be cleaner way
         skip_knobs = {'name', 'xpos', 'ypos', 'selected'}
@@ -52,7 +60,7 @@ def replaceNode(sourceClass, targetClass, node=None):
                 pass
 
     # 5. Script Expressions
-    for old_node, new_node, _, _ in replacements:
+    for old_node, new_node, _, _ in reversed(replacements):
         for dep in old_node.dependent(nuke.EXPRESSIONS): # only check expression refered nodes
             for knob in dep.knobs().values():
                 if knob.hasExpression():
